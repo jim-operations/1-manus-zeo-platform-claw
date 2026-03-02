@@ -349,8 +349,7 @@ studentGrades:
 - Digital workflow engine (Camunda/Flowable)
 - SMS/email notification channels (currently in-app only)
 - Emergency alert system
-- Report card generation and PDF export
-- Parent/Student portal (dedicated views)
+- Report card PDF export pipeline (UI exists; export pending)
 
 ## Conventions for AI Agents
 
@@ -384,4 +383,5 @@ studentGrades:
 | 2026-03-01 | Professional Dev tests | 27 new tests (route existence, auth guards, permission guards, input validation, read access), 187 total tests passing |
 | 2026-03-01 | Phase 1 gap closure pass | Added unique index for `leaveBalances(staffId, year)`, tightened leave date-range and balance checks, enabled leave/transfer search filtering in backend + UI search controls, wired branch-level transfer rejection in UI, added announcement detail navigation, improved dashboard/analytics/notifications error states, aligned README role/PWA claims, and updated router tests to current procedure names (`leave.create`, `users.updateRole`) |
 | 2026-03-02 | Phase 2 integrity fixes | Added missing `parentStudentLinks` and `reportCards` schema models; added parent-portal backend procedures (`linkChild`, `myChildren`, `childProfile`, child attendance/grade summary, child report cards); added report-card list/upsert router procedures for SIS completeness. |
+| 2026-03-02 | Phase 4 kickoff | Added Phase 4 frontend surfaces: new Report Cards page and Parent Portal page, wired routes/sidebar navigation, added i18n keys (en/si/ta), and introduced `phase4.test.ts` for report-card + parent-portal guards/validation/procedure coverage. |
 

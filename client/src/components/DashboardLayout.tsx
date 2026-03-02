@@ -52,6 +52,8 @@ import {
   ClipboardCheck,
   Target,
   Trophy,
+  FileText,
+  UserRound,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -107,7 +109,9 @@ const navGroups: NavGroup[] = [
       { icon: UserCheck, label: "Students", path: "/students", requiredPermission: PERMISSIONS.STUDENT_VIEW },
       { icon: ClipboardList, label: "Attendance", path: "/attendance", requiredPermission: PERMISSIONS.ATTENDANCE_MARK },
       { icon: BookOpen, label: "Grades", path: "/grades", requiredPermission: PERMISSIONS.GRADE_VIEW },
+      { icon: FileText, label: "Report Cards", path: "/report-cards", requiredPermission: PERMISSIONS.GRADE_VIEW },
       { icon: Award, label: "Scholarships", path: "/scholarships", requiredPermission: PERMISSIONS.SCHOLARSHIP_VIEW },
+      { icon: UserRound, label: "Parent Portal", path: "/parent-portal", requiredPermission: PERMISSIONS.STUDENT_VIEW },
     ],
   },
   {

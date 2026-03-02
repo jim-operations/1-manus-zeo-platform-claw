@@ -24,6 +24,8 @@ import StudentProfile from "./pages/StudentProfile";
 import Attendance from "./pages/Attendance";
 import Grades from "./pages/Grades";
 import Scholarships from "./pages/Scholarships";
+import ReportCards from "./pages/ReportCards";
+import ParentPortal from "./pages/ParentPortal";
 // Finance & Procurement
 import BudgetManagement from "./pages/BudgetManagement";
 import Transactions from "./pages/Transactions";
@@ -52,6 +54,8 @@ function Router() {
       <Route path="/attendance" component={Attendance} />
       <Route path="/grades" component={Grades} />
       <Route path="/scholarships" component={Scholarships} />
+      <Route path="/report-cards" component={ReportCards} />
+      <Route path="/parent-portal" component={ParentPortal} />
       {/* Finance & Procurement */}
       <Route path="/budgets" component={BudgetManagement} />
       <Route path="/transactions" component={Transactions} />

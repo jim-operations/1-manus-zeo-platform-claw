@@ -65,7 +65,9 @@
     "supervision": "Supervision & QA",
     "inspections": "Inspections",
     "improvementPlans": "Improvement Plans",
-    "scorecards": "Quality Scorecards"
+    "scorecards": "Quality Scorecards",
+    "reportCards": "Report Cards",
+    "parentPortal": "Parent Portal"
   },
   "dashboard": {
     "title": "Dashboard Overview",
@@ -343,5 +345,70 @@
     "signOut": "Sign Out",
     "profile": "Profile",
     "role": "Role"
+  },
+  "reportCards": {
+    "title": "Report Cards",
+    "subtitle": "Manage term report cards and publish student academic summaries",
+    "actions": {
+      "create": "Create / Update Report Card",
+      "saving": "Saving..."
+    },
+    "fields": {
+      "student": "Student",
+      "studentId": "Student ID",
+      "enrollmentId": "Enrollment ID",
+      "academicYear": "Academic Year",
+      "term": "Term",
+      "attendanceRate": "Attendance Rate",
+      "totalMarks": "Total Marks",
+      "averageMarks": "Average Marks",
+      "gpa": "GPA",
+      "rank": "Class Rank",
+      "classTeacherRemarks": "Class Teacher Remarks",
+      "principalRemarks": "Principal Remarks",
+      "publish": "Publish Status"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "stats": {
+      "total": "Total Report Cards",
+      "published": "Published (Current Page)",
+      "year": "Selected Year"
+    },
+    "filters": {
+      "allTerms": "All Terms"
+    },
+    "messages": {
+      "empty": "No report cards found",
+      "saved": "Report card saved successfully",
+      "studentRequired": "Student ID is required"
+    }
+  },
+  "parentPortal": {
+    "title": "Parent Portal",
+    "subtitle": "View your linked child records, attendance, grades, and report cards",
+    "fields": {
+      "child": "Child",
+      "academicYear": "Academic Year",
+      "fullName": "Full Name",
+      "admissionNumber": "Admission Number",
+      "gender": "Gender",
+      "phone": "Phone"
+    },
+    "cards": {
+      "attendanceRate": "Attendance Rate",
+      "avgMarks": "Average Marks",
+      "reportCards": "Report Cards"
+    },
+    "sections": {
+      "childProfile": "Child Profile",
+      "reportCards": "Recent Report Cards"
+    },
+    "messages": {
+      "noChildren": "No linked children found for your account.",
+      "noReportCards": "No report cards available for the selected child."
+    }
   }
 }

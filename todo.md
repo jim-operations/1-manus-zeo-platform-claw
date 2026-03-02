@@ -301,3 +301,20 @@
 - [x] Frontend: Summary stat cards (total records, completed, in-progress, CPD hours)
 - [x] Frontend: DashboardLayout wrapping
 - [x] Write professional development router tests (27 tests, 187 total passing)
+
+## Phase 4 — Intelligence Layer (Kickoff)
+
+### SIS (V2) — Report Cards & Parent Portal
+- [x] Backend: report card schema + list/upsert router procedures
+- [x] Backend: parent-student linking + parent portal read APIs
+- [x] Frontend: Report Cards page (`/report-cards`) with filters, pagination, and upsert form
+- [x] Frontend: Parent Portal page (`/parent-portal`) for linked children (profile, attendance summary, grade summary, report cards)
+- [x] Navigation + routes: Added Report Cards and Parent Portal entries
+- [x] i18n: Added reportCards + parentPortal keys to en/si/ta
+- [x] Tests: Added `server/phase4.test.ts` for Phase 4 guards/validation/procedure existence
+
+### Phase 4 — Remaining Work
+- [ ] Add report card PDF export/generation pipeline
+- [ ] Build advanced analytics drill-down dashboards (zonal/school comparative)
+- [ ] Supervision deep workflows: stricter state transitions + compliance checks
+- [ ] External reporting exports (CSV/XLSX templates for ministry submissions)
