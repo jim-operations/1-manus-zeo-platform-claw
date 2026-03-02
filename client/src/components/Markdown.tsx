@@ -213,8 +213,11 @@ export const Markdown = memo(function Markdown({
   if (enableCode) plugins.code = code;
   if (enableMermaid) plugins.mermaid = mermaid;
 
+  // streamdown type defs currently don't expose `plugins`, but runtime supports it.
+  const StreamdownComponent = Streamdown as any;
+
   return (
-    <Streamdown
+    <StreamdownComponent
       className={cn("text-foreground leading-relaxed", className)}
       components={{ ...components, ...customComponents }}
       plugins={plugins}
@@ -223,7 +226,7 @@ export const Markdown = memo(function Markdown({
       {...props}
     >
       {children}
-    </Streamdown>
+    </StreamdownComponent>
   );
 });
 
