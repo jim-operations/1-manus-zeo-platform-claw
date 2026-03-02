@@ -24,6 +24,8 @@ import {
   grades, InsertGrade,
   scholarshipPrograms, InsertScholarshipProgram,
   scholarshipApplications, InsertScholarshipApplication,
+  parentStudentLinks, InsertParentStudentLink,
+  reportCards, InsertReportCard,
   budgets, InsertBudget,
   transactions, InsertTransaction,
   salaryRecords, InsertSalaryRecord,
@@ -1076,6 +1078,104 @@ export async function updateScholarshipApplication(id: number, data: Partial<Ins
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(scholarshipApplications).set(data).where(eq(scholarshipApplications.id, id));
+}
+
+// ─── Parent-Student Links / Parent Portal ──────────────────────────────────
+export async function linkParentToStudent(data: InsertParentStudentLink) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(parentStudentLinks).values(data).onDuplicateKeyUpdate({
+    set: { relationship: data.relationship ?? "guardian", isPrimary: data.isPrimary ?? false, isActive: data.isActive ?? true, updatedAt: new Date() },
+  });
+}
+
+export async function listChildrenForParent(parentUserId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    linkId: parentStudentLinks.id,
+    studentId: studentProfiles.id,
+    fullName: studentProfiles.fullName,
+    admissionNumber: studentProfiles.admissionNumber,
+    relationship: parentStudentLinks.relationship,
+    isPrimary: parentStudentLinks.isPrimary,
+    isActive: parentStudentLinks.isActive,
+  }).from(parentStudentLinks)
+    .innerJoin(studentProfiles, eq(parentStudentLinks.studentId, studentProfiles.id))
+    .where(and(eq(parentStudentLinks.parentUserId, parentUserId), eq(parentStudentLinks.isActive, true), eq(studentProfiles.isActive, true)))
+    .orderBy(studentProfiles.fullName);
+}
+
+export async function getParentChildProfile(parentUserId: number, studentId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db.select({
+    id: studentProfiles.id,
+    fullName: studentProfiles.fullName,
+    admissionNumber: studentProfiles.admissionNumber,
+    dateOfBirth: studentProfiles.dateOfBirth,
+    gender: studentProfiles.gender,
+    nationality: studentProfiles.nationality,
+    address: studentProfiles.address,
+    phone: studentProfiles.phone,
+    email: studentProfiles.email,
+    emergencyContact: studentProfiles.emergencyContact,
+    emergencyPhone: studentProfiles.emergencyPhone,
+    healthRecords: studentProfiles.healthRecords,
+  }).from(parentStudentLinks)
+    .innerJoin(studentProfiles, eq(parentStudentLinks.studentId, studentProfiles.id))
+    .where(and(eq(parentStudentLinks.parentUserId, parentUserId), eq(parentStudentLinks.studentId, studentId), eq(parentStudentLinks.isActive, true)))
+    .limit(1);
+  return rows[0];
+}
+
+export async function getParentChildAttendanceSummary(parentUserId: number, studentId: number, academicYear: number) {
+  const link = await getParentChildProfile(parentUserId, studentId);
+  if (!link) return undefined;
+  return getStudentAttendanceSummary(studentId, academicYear);
+}
+
+export async function getParentChildGradeSummary(parentUserId: number, studentId: number, academicYear: number) {
+  const link = await getParentChildProfile(parentUserId, studentId);
+  if (!link) return undefined;
+  return getStudentGradeSummary(studentId, academicYear);
+}
+
+// ─── Report Cards ───────────────────────────────────────────────────────────
+export async function listReportCards(opts: { studentId?: number; academicYear?: number; term?: "term_1" | "term_2" | "term_3"; page: number; pageSize: number }) {
+  const db = await getDb();
+  if (!db) return { data: [], total: 0 };
+  const conditions: any[] = [];
+  if (opts.studentId) conditions.push(eq(reportCards.studentId, opts.studentId));
+  if (opts.academicYear) conditions.push(eq(reportCards.academicYear, opts.academicYear));
+  if (opts.term) conditions.push(eq(reportCards.term, opts.term));
+  const where = conditions.length > 0 ? (conditions.length > 1 ? and(...conditions) : conditions[0]) : undefined;
+  const [rows, countResult] = await Promise.all([
+    db.select().from(reportCards).where(where).orderBy(desc(reportCards.generatedAt)).limit(opts.pageSize).offset((opts.page - 1) * opts.pageSize),
+    db.select({ count: sql<number>`count(*)` }).from(reportCards).where(where),
+  ]);
+  return { data: rows, total: countResult[0]?.count ?? 0 };
+}
+
+export async function createOrUpdateReportCard(data: InsertReportCard) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(reportCards).values(data).onDuplicateKeyUpdate({
+    set: {
+      classTeacherRemarks: data.classTeacherRemarks ?? null,
+      principalRemarks: data.principalRemarks ?? null,
+      attendanceRate: data.attendanceRate ?? null,
+      totalMarks: data.totalMarks ?? null,
+      averageMarks: data.averageMarks ?? null,
+      gradePointAverage: data.gradePointAverage ?? null,
+      rankInClass: data.rankInClass ?? null,
+      generatedBy: data.generatedBy,
+      generatedAt: new Date(),
+      publishedAt: data.publishedAt ?? null,
+      isPublished: data.isPublished ?? false,
+      updatedAt: new Date(),
+    },
+  });
 }
 
 // ─── SIS Analytics ──────────────────────────────────────────────────────────

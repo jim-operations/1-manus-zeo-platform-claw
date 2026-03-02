@@ -1333,6 +1333,100 @@ export const appRouter = router({
     }),
   }),
 
+  // ─── Report Cards ───────────────────────────────────────────────────────────
+  reportCards: router({
+    list: requirePermission(PERMISSIONS.GRADE_VIEW).input(
+      z.object({
+        studentId: z.number().optional(),
+        academicYear: z.number().optional(),
+        term: z.enum(["term_1", "term_2", "term_3"]).optional(),
+        page: z.number().min(1).default(1),
+        pageSize: z.number().min(1).max(100).default(20),
+      }).optional()
+    ).query(async ({ input }) => {
+      return db.listReportCards({
+        studentId: input?.studentId,
+        academicYear: input?.academicYear,
+        term: input?.term,
+        page: input?.page ?? 1,
+        pageSize: input?.pageSize ?? 20,
+      });
+    }),
+
+    upsert: requirePermission(PERMISSIONS.GRADE_MANAGE).input(
+      z.object({
+        studentId: z.number(),
+        enrollmentId: z.number().optional(),
+        academicYear: z.number(),
+        term: z.enum(["term_1", "term_2", "term_3"]),
+        classTeacherRemarks: z.string().optional(),
+        principalRemarks: z.string().optional(),
+        attendanceRate: z.number().min(0).max(100).optional(),
+        totalMarks: z.number().min(0).optional(),
+        averageMarks: z.number().min(0).optional(),
+        gradePointAverage: z.number().min(0).optional(),
+        rankInClass: z.number().min(1).optional(),
+        isPublished: z.boolean().optional(),
+      })
+    ).mutation(async ({ input, ctx }) => {
+      await db.createOrUpdateReportCard({ ...input, generatedBy: ctx.user.id, publishedAt: input.isPublished ? new Date() : undefined });
+      await audit(ctx.user.id, "upsert", "report_card", undefined, input, ctx.req);
+      return { success: true };
+    }),
+  }),
+
+  // ─── Parent Portal (SIS read-only child access) ──────────────────────────
+  parentPortal: router({
+    linkChild: requirePermission(PERMISSIONS.STUDENT_MANAGE).input(
+      z.object({
+        parentUserId: z.number(),
+        studentId: z.number(),
+        relationship: z.enum(["father", "mother", "guardian", "other"]).optional(),
+        isPrimary: z.boolean().optional(),
+      })
+    ).mutation(async ({ input, ctx }) => {
+      await db.linkParentToStudent({ ...input, isActive: true });
+      await audit(ctx.user.id, "link", "parent_student", undefined, input, ctx.req);
+      return { success: true };
+    }),
+
+    myChildren: protectedProcedure.query(async ({ ctx }) => {
+      return db.listChildrenForParent(ctx.user.id);
+    }),
+
+    childProfile: protectedProcedure.input(z.object({ studentId: z.number() })).query(async ({ input, ctx }) => {
+      const data = await db.getParentChildProfile(ctx.user.id, input.studentId);
+      if (!data) throw new TRPCError({ code: "FORBIDDEN", message: "Student not linked to this parent" });
+      return data;
+    }),
+
+    childAttendanceSummary: protectedProcedure.input(
+      z.object({ studentId: z.number(), academicYear: z.number() })
+    ).query(async ({ input, ctx }) => {
+      const data = await db.getParentChildAttendanceSummary(ctx.user.id, input.studentId, input.academicYear);
+      if (!data) throw new TRPCError({ code: "FORBIDDEN", message: "Student not linked to this parent" });
+      return data;
+    }),
+
+    childGradeSummary: protectedProcedure.input(
+      z.object({ studentId: z.number(), academicYear: z.number() })
+    ).query(async ({ input, ctx }) => {
+      const data = await db.getParentChildGradeSummary(ctx.user.id, input.studentId, input.academicYear);
+      if (!data) throw new TRPCError({ code: "FORBIDDEN", message: "Student not linked to this parent" });
+      return data;
+    }),
+
+    childReportCards: protectedProcedure.input(
+      z.object({ studentId: z.number(), page: z.number().min(1).default(1), pageSize: z.number().min(1).max(100).default(20) }).optional()
+    ).query(async ({ input, ctx }) => {
+      const studentId = input?.studentId;
+      if (!studentId) return { data: [], total: 0 };
+      const linked = await db.getParentChildProfile(ctx.user.id, studentId);
+      if (!linked) throw new TRPCError({ code: "FORBIDDEN", message: "Student not linked to this parent" });
+      return db.listReportCards({ studentId, page: input?.page ?? 1, pageSize: input?.pageSize ?? 20 });
+    }),
+  }),
+
   // ─── SIS Analytics ─────────────────────────────────────────────────────────
   sisAnalytics: router({
     overview: requirePermission(PERMISSIONS.ANALYTICS_VIEW).query(async () => {

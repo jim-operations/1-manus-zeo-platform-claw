@@ -572,6 +572,59 @@ export const scholarshipApplications = mysqlTable("scholarship_applications", {
 export type ScholarshipApplication = typeof scholarshipApplications.$inferSelect;
 export type InsertScholarshipApplication = typeof scholarshipApplications.$inferInsert;
 
+// ─── Parent-Student Links ────────────────────────────────────────────────────
+export const parentStudentLinks = mysqlTable(
+  "parent_student_links",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    parentUserId: int("parentUserId").notNull(),
+    studentId: int("studentId").notNull(),
+    relationship: mysqlEnum("relationship", ["father", "mother", "guardian", "other"]).default("guardian").notNull(),
+    isPrimary: boolean("isPrimary").default(false).notNull(),
+    isActive: boolean("isActive").default(true).notNull(),
+    linkedAt: timestamp("linkedAt").defaultNow().notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => ({
+    parentStudentUnique: uniqueIndex("parent_student_unique").on(table.parentUserId, table.studentId),
+  }),
+);
+
+export type ParentStudentLink = typeof parentStudentLinks.$inferSelect;
+export type InsertParentStudentLink = typeof parentStudentLinks.$inferInsert;
+
+// ─── Report Cards ───────────────────────────────────────────────────────────
+export const reportCards = mysqlTable(
+  "report_cards",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    studentId: int("studentId").notNull(),
+    enrollmentId: int("enrollmentId"),
+    academicYear: int("academicYear").notNull(),
+    term: mysqlEnum("term", ["term_1", "term_2", "term_3"]).notNull(),
+    classTeacherRemarks: text("classTeacherRemarks"),
+    principalRemarks: text("principalRemarks"),
+    attendanceRate: int("attendanceRate"),
+    totalMarks: int("totalMarks"),
+    averageMarks: int("averageMarks"),
+    gradePointAverage: int("gradePointAverage"),
+    rankInClass: int("rankInClass"),
+    generatedBy: int("generatedBy").notNull(),
+    generatedAt: timestamp("generatedAt").defaultNow().notNull(),
+    publishedAt: timestamp("publishedAt"),
+    isPublished: boolean("isPublished").default(false).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => ({
+    studentYearTermUnique: uniqueIndex("report_cards_student_year_term_unique").on(table.studentId, table.academicYear, table.term),
+  }),
+);
+
+export type ReportCard = typeof reportCards.$inferSelect;
+export type InsertReportCard = typeof reportCards.$inferInsert;
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // PHASE 3 — FINANCE & PROCUREMENT MODULE
 // ═══════════════════════════════════════════════════════════════════════════════

@@ -383,4 +383,5 @@ studentGrades:
 | 2026-03-01 | i18n Phase 3 update | Added Finance, Supervision, Professional Development, Departments, and Dashboard analytics strings to en.json, si.json, ta.json (all 3 languages) |
 | 2026-03-01 | Professional Dev tests | 27 new tests (route existence, auth guards, permission guards, input validation, read access), 187 total tests passing |
 | 2026-03-01 | Phase 1 gap closure pass | Added unique index for `leaveBalances(staffId, year)`, tightened leave date-range and balance checks, enabled leave/transfer search filtering in backend + UI search controls, wired branch-level transfer rejection in UI, added announcement detail navigation, improved dashboard/analytics/notifications error states, aligned README role/PWA claims, and updated router tests to current procedure names (`leave.create`, `users.updateRole`) |
+| 2026-03-02 | Phase 2 integrity fixes | Added missing `parentStudentLinks` and `reportCards` schema models; added parent-portal backend procedures (`linkChild`, `myChildren`, `childProfile`, child attendance/grade summary, child report cards); added report-card list/upsert router procedures for SIS completeness. |
 
