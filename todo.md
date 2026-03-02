@@ -325,3 +325,4 @@
 - [x] Removed false-positive procedure-existence checks that relied on tRPC proxy `typeof` behavior
 - [x] Moved analytics script loading from static `%VITE_*%` HTML placeholders to runtime injection in `client/src/main.tsx`
 - [x] Re-ran full verification (`pnpm check`, `pnpm test`, `pnpm build`)
+- [x] Performance: Route-level code splitting in `client/src/App.tsx` via `React.lazy` + `Suspense` (reduced monolithic initial bundle)

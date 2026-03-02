@@ -1,40 +1,52 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
+import { lazy, Suspense } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import StaffDirectory from "./pages/StaffDirectory";
-import StaffDetail from "./pages/StaffDetail";
-import LeaveManagement from "./pages/LeaveManagement";
-import Transfers from "./pages/Transfers";
-import Schools from "./pages/Schools";
-import Departments from "./pages/Departments";
-import ProfessionalDev from "./pages/ProfessionalDev";
-import Announcements from "./pages/Announcements";
-import AnnouncementDetail from "./pages/AnnouncementDetail";
-import Messages from "./pages/Messages";
-import Notifications from "./pages/Notifications";
-import Analytics from "./pages/Analytics";
-import AuditLog from "./pages/AuditLog";
-import UserManagement from "./pages/UserManagement";
-import StudentDirectory from "./pages/StudentDirectory";
-import StudentProfile from "./pages/StudentProfile";
-import Attendance from "./pages/Attendance";
-import Grades from "./pages/Grades";
-import Scholarships from "./pages/Scholarships";
-import ReportCards from "./pages/ReportCards";
-import ParentPortal from "./pages/ParentPortal";
+
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Home = lazy(() => import("./pages/Home"));
+
+// HRM
+const StaffDirectory = lazy(() => import("./pages/StaffDirectory"));
+const StaffDetail = lazy(() => import("./pages/StaffDetail"));
+const LeaveManagement = lazy(() => import("./pages/LeaveManagement"));
+const Transfers = lazy(() => import("./pages/Transfers"));
+const Schools = lazy(() => import("./pages/Schools"));
+const Departments = lazy(() => import("./pages/Departments"));
+const ProfessionalDev = lazy(() => import("./pages/ProfessionalDev"));
+
+// Communication
+const Announcements = lazy(() => import("./pages/Announcements"));
+const AnnouncementDetail = lazy(() => import("./pages/AnnouncementDetail"));
+const Messages = lazy(() => import("./pages/Messages"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+
+// Admin
+const Analytics = lazy(() => import("./pages/Analytics"));
+const AuditLog = lazy(() => import("./pages/AuditLog"));
+const UserManagement = lazy(() => import("./pages/UserManagement"));
+
+// SIS
+const StudentDirectory = lazy(() => import("./pages/StudentDirectory"));
+const StudentProfile = lazy(() => import("./pages/StudentProfile"));
+const Attendance = lazy(() => import("./pages/Attendance"));
+const Grades = lazy(() => import("./pages/Grades"));
+const Scholarships = lazy(() => import("./pages/Scholarships"));
+const ReportCards = lazy(() => import("./pages/ReportCards"));
+const ParentPortal = lazy(() => import("./pages/ParentPortal"));
+
 // Finance & Procurement
-import BudgetManagement from "./pages/BudgetManagement";
-import Transactions from "./pages/Transactions";
-import Payroll from "./pages/Payroll";
-import Procurement from "./pages/Procurement";
+const BudgetManagement = lazy(() => import("./pages/BudgetManagement"));
+const Transactions = lazy(() => import("./pages/Transactions"));
+const Payroll = lazy(() => import("./pages/Payroll"));
+const Procurement = lazy(() => import("./pages/Procurement"));
+
 // Supervision & Quality Assurance
-import Inspections from "./pages/Inspections";
-import ImprovementPlans from "./pages/ImprovementPlans";
-import QualityScorecards from "./pages/QualityScorecards";
+const Inspections = lazy(() => import("./pages/Inspections"));
+const ImprovementPlans = lazy(() => import("./pages/ImprovementPlans"));
+const QualityScorecards = lazy(() => import("./pages/QualityScorecards"));
 
 function Router() {
   return (
@@ -80,13 +92,23 @@ function Router() {
   );
 }
 
+function AppFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+      Loading...
+    </div>
+  );
+}
+
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <Suspense fallback={<AppFallback />}>
+            <Router />
+          </Suspense>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

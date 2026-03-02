@@ -341,7 +341,7 @@ studentGrades:
 ## Known Issues
 
 - Vite's tRPC type watcher sometimes shows stale errors for SIS routers — authoritative check is `npx tsc --noEmit`
-- Large frontend chunk warning remains in production build (~1.4MB main bundle); route-level code splitting is recommended as a non-breaking optimization.
+- Post-code-splitting build still reports a chunk-size warning for `index` (~512k minified); additional manual chunking can further optimize startup payload.
 
 ## Known Gaps (Phase 3+ Backlog)
 
@@ -386,4 +386,5 @@ studentGrades:
 | 2026-03-02 | Phase 2 integrity fixes | Added missing `parentStudentLinks` and `reportCards` schema models; added parent-portal backend procedures (`linkChild`, `myChildren`, `childProfile`, child attendance/grade summary, child report cards); added report-card list/upsert router procedures for SIS completeness. |
 | 2026-03-02 | Phase 4 kickoff | Added Phase 4 frontend surfaces: new Report Cards page and Parent Portal page, wired routes/sidebar navigation, added i18n keys (en/si/ta), and introduced `phase4.test.ts` for report-card + parent-portal guards/validation/procedure coverage. |
 | 2026-03-02 | Audit hardening pass | Added schema migration `0004_flat_earthquake` for parent/report-card tables and leave-balance uniqueness, refactored SIS tests to current router contracts (removed proxy false-positives), and moved analytics script injection to runtime to remove unresolved Vite env build warnings. |
+| 2026-03-02 | Route-level code splitting | Refactored `client/src/App.tsx` to lazy-load all page routes using `React.lazy` + `Suspense`; reduced monolithic frontend bundle from ~1.4MB to split chunks (`index` ~512k, route chunks loaded on demand). |
 
