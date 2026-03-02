@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { UNAUTHED_ERR_MSG } from '@shared/const';
+import { UNAUTHED_ERR_MSG } from "@shared/const";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
@@ -22,7 +22,7 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   window.location.href = getLoginUrl();
 };
 
-queryClient.getQueryCache().subscribe(event => {
+queryClient.getQueryCache().subscribe((event) => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
     redirectToLoginIfUnauthorized(error);
@@ -30,13 +30,33 @@ queryClient.getQueryCache().subscribe(event => {
   }
 });
 
-queryClient.getMutationCache().subscribe(event => {
+queryClient.getMutationCache().subscribe((event) => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.mutation.state.error;
     redirectToLoginIfUnauthorized(error);
     console.error("[API Mutation Error]", error);
   }
 });
+
+function injectAnalyticsScript() {
+  if (typeof document === "undefined") return;
+
+  const endpoint = (import.meta.env.VITE_ANALYTICS_ENDPOINT ?? "").trim();
+  const websiteId = (import.meta.env.VITE_ANALYTICS_WEBSITE_ID ?? "").trim();
+
+  if (!endpoint || !websiteId) return;
+
+  const existing = document.querySelector("script[data-website-id]") as HTMLScriptElement | null;
+  if (existing?.src?.includes("/umami")) return;
+
+  const script = document.createElement("script");
+  script.defer = true;
+  script.src = `${endpoint.replace(/\/$/, "")}/umami`;
+  script.setAttribute("data-website-id", websiteId);
+  document.head.appendChild(script);
+}
+
+injectAnalyticsScript();
 
 const trpcClient = trpc.createClient({
   links: [

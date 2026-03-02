@@ -331,16 +331,17 @@ studentGrades:
 | `server/permissions.test.ts` | 24 | RBAC permissions, hierarchy, role matrix, display names |
 | `server/auth.logout.test.ts` | 1 | Auth session cleanup |
 | `server/routers.test.ts` | 33 | Permission guards (S1-S6), role escalation (S5), input validation, auth flow |
-| `server/sis.test.ts` | 21 | SIS auth guards, input validation, pagination, procedure existence, i18n parity |
+| `server/sis.test.ts` | 19 | SIS auth guards, input validation, pagination/query shape checks, i18n parity |
 | `server/finance-supervision.test.ts` | 41 | Finance & Supervision permission guards, input validation, role-based access, cross-module restrictions |
 | `server/dashboard-analytics.test.ts` | 11 | Dashboard analytics endpoint permissions, response structure, role-based access |
 | `server/departments.test.ts` | 29 | Department CRUD permissions, input validation, staff-by-department access, role guards |
-| **Total** | **160** | **All passing** |
+| `server/phase4.test.ts` | 12 | Report Cards + Parent Portal auth guards, validation, and procedure coverage |
+| **Total** | **197** | **All passing** |
 
 ## Known Issues
 
-- 5 TS errors exist in **pre-existing template files** (AIChatBox.tsx, Markdown.tsx, ComponentShowcase.tsx) — not in project code
 - Vite's tRPC type watcher sometimes shows stale errors for SIS routers — authoritative check is `npx tsc --noEmit`
+- Large frontend chunk warning remains in production build (~1.4MB main bundle); route-level code splitting is recommended as a non-breaking optimization.
 
 ## Known Gaps (Phase 3+ Backlog)
 
@@ -359,7 +360,7 @@ studentGrades:
 4. **Add notifications** via `notify()` for user-facing state changes.
 5. **Use paginated queries** for all list endpoints (page/pageSize pattern).
 6. **Escape search inputs** before using in SQL LIKE clauses.
-7. **Run `pnpm test`** after any backend changes to ensure all 187 tests pass.
+7. **Run `pnpm test`** after any backend changes to ensure all 197 tests pass.
 8. **Follow the role hierarchy** — never allow a user to assign a role >= their own level.
 9. **Use `trpc.*.useQuery/useMutation`** for all frontend data access — no raw fetch/axios.
 10. **Mark completed items in todo.md** immediately after implementation.
@@ -384,4 +385,5 @@ studentGrades:
 | 2026-03-01 | Phase 1 gap closure pass | Added unique index for `leaveBalances(staffId, year)`, tightened leave date-range and balance checks, enabled leave/transfer search filtering in backend + UI search controls, wired branch-level transfer rejection in UI, added announcement detail navigation, improved dashboard/analytics/notifications error states, aligned README role/PWA claims, and updated router tests to current procedure names (`leave.create`, `users.updateRole`) |
 | 2026-03-02 | Phase 2 integrity fixes | Added missing `parentStudentLinks` and `reportCards` schema models; added parent-portal backend procedures (`linkChild`, `myChildren`, `childProfile`, child attendance/grade summary, child report cards); added report-card list/upsert router procedures for SIS completeness. |
 | 2026-03-02 | Phase 4 kickoff | Added Phase 4 frontend surfaces: new Report Cards page and Parent Portal page, wired routes/sidebar navigation, added i18n keys (en/si/ta), and introduced `phase4.test.ts` for report-card + parent-portal guards/validation/procedure coverage. |
+| 2026-03-02 | Audit hardening pass | Added schema migration `0004_flat_earthquake` for parent/report-card tables and leave-balance uniqueness, refactored SIS tests to current router contracts (removed proxy false-positives), and moved analytics script injection to runtime to remove unresolved Vite env build warnings. |
 

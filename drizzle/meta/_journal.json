@@ -29,6 +29,13 @@
       "when": 1772311759055,
       "tag": "0003_orange_pyro",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1772466471040,
+      "tag": "0004_flat_earthquake",
+      "breakpoints": true
     }
   ]
 }

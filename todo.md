@@ -318,3 +318,10 @@
 - [ ] Build advanced analytics drill-down dashboards (zonal/school comparative)
 - [ ] Supervision deep workflows: stricter state transitions + compliance checks
 - [ ] External reporting exports (CSV/XLSX templates for ministry submissions)
+
+## Audit Hardening Improvements (2026-03-02)
+- [x] Generated migration `drizzle/0004_flat_earthquake.sql` for parent/student links + report cards + leave balance unique index
+- [x] Refactored `server/sis.test.ts` to align with current router contracts (`pageSize`, nested scholarships router, attendance route names)
+- [x] Removed false-positive procedure-existence checks that relied on tRPC proxy `typeof` behavior
+- [x] Moved analytics script loading from static `%VITE_*%` HTML placeholders to runtime injection in `client/src/main.tsx`
+- [x] Re-ran full verification (`pnpm check`, `pnpm test`, `pnpm build`)
